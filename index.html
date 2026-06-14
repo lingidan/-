@@ -557,14 +557,13 @@
         });
 
         function loadClassesData() {
-            const localData = localStorage.getItem('csk_classes_data_v11');
+            // Версия v12
+            const localData = localStorage.getItem('csk_classes_data_v12');
             if (localData) {
                 currentClasses = JSON.parse(localData);
                 renderGrid(currentClasses);
-                // Даже если данные есть, тихонько обновляем их в фоне, чтобы пользователь всегда видел актуальное при следующем заходе
                 fetchSheetsData(true); 
             } else {
-                // Если у нового пользователя пусто — автоматически качаем актуальную таблицу без паролей
                 fetchSheetsData(false);
             }
         }
@@ -671,7 +670,7 @@
 
         function closePanel() {
             selectedClassId = null;
-            document.querySelectorAll('.class-card').forEach(card => card.remove('active'));
+            document.querySelectorAll('.class-card').forEach(card => card.classList.remove('active'));
             classPanel.style.display = 'none';
         }
 
@@ -744,16 +743,22 @@
 
         function cleanDriveUrl(url) {
             if (!url) return '';
-            let cleanUrl = url.trim().replace(/&/g, '&').replace(/["'()]/g, '').replace(/HYPERLINK/i, '');
+            
+            // Чистим мусор вокруг ссылок
+            let cleanUrl = url.trim().replace(/["'()]/g, '').replace(/HYPERLINK/i, '');
+            
             let fileId = '';
             if (cleanUrl.includes('id=')) {
                 fileId = cleanUrl.split('id=')[1].split('&')[0];
             } else if (cleanUrl.includes('/file/d/')) {
                 fileId = cleanUrl.split('/file/d/')[1].split('/')[0];
             }
+            
             if (fileId) {
+                // Стабильный глобальный эндпоинт для рендеринга миниатюр Диска
                 return `https://drive.google.com/thumbnail?id=${fileId}&sz=w400`;
             }
+            
             return cleanUrl;
         }
 
@@ -795,12 +800,9 @@
         async function fetchSheetsData(isBackground = false) {
             if (!isBackground) {
                 showStatus('Синхронизация...', 'status-loading');
-            } else {
-                console.log('Фоновое обновление данных из таблицы...');
             }
 
             try {
-                // Добавляем случайный параметр против жесткого кэширования ответов браузерами
                 const response = await fetch(GOOGLE_SHEET_CSV_URL + "&nocache=" + new Date().getTime());
                 if (!response.ok) throw new Error('Ошибка доступа к Google Таблице.');
                 
@@ -849,7 +851,7 @@
 
                 if (parsedClasses.length > 0) {
                     currentClasses = parsedClasses;
-                    localStorage.setItem('csk_classes_data_v11', JSON.stringify(currentClasses));
+                    localStorage.setItem('csk_classes_data_v12', JSON.stringify(currentClasses));
                     renderGrid(currentClasses);
                     
                     if (!isBackground) {
