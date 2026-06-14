@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>КСК — Гайд по классам | Лингидан</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-deep: #0e0303;
+    --bg-dark: #1a0505;
+    --bg-card: #200808;
+    --bg-panel: #180404;
+    --bg-hover: #2d0d0d;
+    --crimson: #8B1A1A;
+    --crimson-light: #C0392B;
+    --crimson-mid: #6b1515;
+    --gold: #D4AF37;
+    --gold-light: #F0CC5A;
+    --gold-dim: #8B7120;
+    --text-primary: #F5E6C8;
+    --text-secondary: #C9A96E;
+    --text-muted: #7a5c3a;
+    --border: rgba(212,175,55,0.15);
+    --border-hover: rgba(212,175,55,0.4);
+    --border-active: rgba(212,175,55,0.7);
+    --glow: 0 0 20px rgba(212,175,55,0.12);
+    --glow-active: 0 0 30px rgba(212,175,55,0.25);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-deep);
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(180deg, #0e0303 0%, rgba(14,3,3,0.95) 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+  }
+
+  .header-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    height: 64px;
+  }
+
+  .logo-crown {
+    font-size: 22px;
+    color: var(--gold);
+    filter: drop-shadow(0 0 6px rgba(212,175,55,0.5));
+  }
+
+  .site-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .site-subtitle {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .header-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .search-box {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(212,175,55,0.05);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.4rem 0.8rem;
+    transition: border-color 0.2s;
+  }
+
+  .search-box:focus-within {
+    border-color: var(--border-hover);
+  }
+
+  .search-box input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    width: 180px;
+  }
+
+  .search-box input::placeholder { color: var(--text-muted); }
+
+  .search-icon { color: var(--text-muted); font-size: 14px; }
+
+  /* LAYOUT */
+  .layout {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    min-height: calc(100vh - 64px);
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    border-right: 1px solid var(--border);
+    background: var(--bg-dark);
+    padding: 1.5rem 1rem;
+    position: sticky;
+    top: 64px;
+    height: calc(100vh - 64px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--crimson) transparent;
+  }
+
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--crimson); border-radius: 2px; }
+
+  .sidebar-section {
+    margin-bottom: 0.5rem;
+  }
+
+  .sidebar-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    padding: 0 0.5rem;
+    margin-bottom: 0.5rem;
+    margin-top: 1rem;
+    display: block;
+  }
+
+  .class-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+  }
+
+  .class-btn {
+    aspect-ratio: 1;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    cursor: pointer;
+    transition: all 0.18s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.55rem;
+    color: var(--text-secondary);
+    text-align: center;
+    padding: 3px;
+    line-height: 1.2;
+    font-family: 'Inter', sans-serif;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .class-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(212,175,55,0.08) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .class-btn:hover {
+    border-color: var(--border-hover);
+    background: var(--bg-hover);
+    color: var(--text-primary);
+    box-shadow: var(--glow);
+    transform: translateY(-1px);
+  }
+
+  .class-btn:hover::before { opacity: 1; }
+
+  .class-btn.active {
+    border-color: var(--gold);
+    background: rgba(212,175,55,0.12);
+    color: var(--gold-light);
+    box-shadow: var(--glow-active), inset 0 0 12px rgba(212,175,55,0.06);
+  }
+
+  .class-btn.active::before { opacity: 1; }
+
+  .class-icon-wrap {
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
+    background: var(--crimson-mid);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 2px;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  /* MAIN CONTENT */
+  .main-content {
+    padding: 2rem;
+    min-height: calc(100vh - 64px);
+  }
+
+  /* WELCOME STATE */
+  .welcome-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    text-align: center;
+    gap: 1rem;
+  }
+
+  .welcome-crown {
+    font-size: 4rem;
+    color: var(--gold);
+    filter: drop-shadow(0 0 20px rgba(212,175,55,0.3));
+    animation: pulse-gold 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse-gold {
+    0%, 100% { filter: drop-shadow(0 0 20px rgba(212,175,55,0.3)); }
+    50% { filter: drop-shadow(0 0 35px rgba(212,175,55,0.5)); }
+  }
+
+  .welcome-title {
+    font-family: 'Cinzel', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.06em;
+  }
+
+  .welcome-sub {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    max-width: 360px;
+    line-height: 1.6;
+  }
+
+  .ornament {
+    color: var(--gold-dim);
+    font-size: 1.2rem;
+    letter-spacing: 0.5em;
+  }
+
+  /* CLASS PANEL */
+  .class-panel {
+    display: none;
+    animation: slideIn 0.25s ease;
+  }
+
+  .class-panel.visible { display: block; }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(16px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .panel-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+
+  .panel-header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 80px;
+    height: 1px;
+    background: var(--gold);
+    box-shadow: 0 0 8px var(--gold);
+  }
+
+  .class-avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--crimson) 0%, var(--bg-card) 100%);
+    border: 2px solid var(--border-active);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    flex-shrink: 0;
+    box-shadow: 0 0 20px rgba(212,175,55,0.15);
+  }
+
+  .panel-title-block { flex: 1; }
+
+  .panel-class-name {
+    font-family: 'Cinzel', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--gold-light);
+    letter-spacing: 0.04em;
+  }
+
+  .panel-type-badge {
+    display: inline-block;
+    margin-top: 4px;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    font-family: 'Cinzel', serif;
+  }
+
+  /* TABS */
+  .tab-nav {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0;
+  }
+
+  .tab-btn {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    letter-spacing: 0.05em;
+    position: relative;
+    transition: color 0.2s;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+  }
+
+  .tab-btn::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--gold);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .tab-btn:hover { color: var(--text-secondary); }
+
+  .tab-btn.active {
+    color: var(--gold);
+  }
+
+  .tab-btn.active::after { opacity: 1; }
+
+  /* TAB CONTENT */
+  .tab-pane { display: none; }
+  .tab-pane.active { display: block; }
+
+  /* ABILITY CARDS */
+  .abilities-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .ability-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+    transition: border-color 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ability-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--crimson);
+  }
+
+  .ability-card.ult::before { background: var(--gold); }
+  .ability-card.shard::before { background: #9b59b6; }
+  .ability-card.passive::before { background: #2980b9; }
+
+  .ability-card:hover { border-color: var(--border-hover); }
+
+  .ability-label {
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.4rem;
+    font-weight: 600;
+  }
+
+  .ability-label.ult { color: var(--gold-dim); }
+  .ability-label.shard { color: #9b59b6; }
+  .ability-label.passive { color: #2980b9; }
+
+  .ability-desc {
+    font-size: 0.82rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+  }
+
+  /* BUILD SECTION */
+  .build-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .build-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+  }
+
+  .build-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .build-title .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    flex-shrink: 0;
+  }
+
+  .build-title .dot.pve { background: #27ae60; }
+  .build-title .dot.extra { background: #2980b9; }
+
+  .build-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .build-list li {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 3px 0;
+    border-bottom: 1px solid rgba(212,175,55,0.05);
+  }
+
+  .build-list li:last-child { border-bottom: none; }
+
+  .item-num {
+    font-family: 'Cinzel', serif;
+    font-size: 0.62rem;
+    color: var(--gold-dim);
+    min-width: 16px;
+    font-weight: 600;
+  }
+
+  .item-name { color: var(--text-primary); font-weight: 400; }
+
+  /* TIPS / COUNTER */
+  .tips-block { margin-bottom: 1.5rem; }
+
+  .tips-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    margin-bottom: 0.8rem;
+    padding-left: 1rem;
+    border-left: 2px solid var(--gold);
+  }
+
+  .tip-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    margin-bottom: 0.4rem;
+    font-size: 0.82rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    position: relative;
+    padding-left: 2rem;
+  }
+
+  .tip-item::before {
+    content: '➥';
+    position: absolute;
+    left: 0.7rem;
+    top: 0.7rem;
+    color: var(--gold-dim);
+    font-size: 0.75rem;
+  }
+
+  .tip-item.play-tip::before { content: '༄'; color: #2980b9; }
+
+  /* SECTION TITLE */
+  .section-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    margin: 1.5rem 0 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* SCROLLBAR */
+  .main-content::-webkit-scrollbar { width: 4px; }
+  .main-content::-webkit-scrollbar-thumb { background: var(--crimson); }
+
+  /* COUNTER SECTION */
+  .counter-block {
+    background: rgba(139,26,26,0.15);
+    border: 1px solid rgba(139,26,26,0.4);
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+    margin-bottom: 1rem;
+  }
+
+  .counter-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--crimson-light);
+    margin-bottom: 0.6rem;
+  }
+
+  .counter-text {
+    font-size: 0.82rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+  }
+
+  /* NO DATA */
+  .no-data {
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    font-style: italic;
+    padding: 0.5rem 0;
+  }
+
+  /* SCROLLBAR MAIN */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: var(--bg-dark); }
+  ::-webkit-scrollbar-thumb { background: var(--crimson-mid); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo-crown">♛</div>
+    <div>
+      <div class="site-title">КСК — Гайд по классам</div>
+      <div class="site-subtitle">Cristalix · by Лингидан</div>
+    </div>
+    <div class="header-right">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="Поиск класса..." oninput="filterClasses(this.value)">
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <span class="sidebar-label">Все классы</span>
+    <div class="class-grid" id="classGrid"></div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-content" id="mainContent">
+    <div class="welcome-state" id="welcomeState">
+      <div class="welcome-crown">♛</div>
+      <div class="ornament">✦ · · · ✦</div>
+      <div class="welcome-title">Гайд по классам КСК</div>
+      <div class="welcome-sub">Выберите класс слева, чтобы увидеть его способности, закуп и советы по игре</div>
+      <div class="ornament">✦ · · · ✦</div>
+    </div>
+    <div class="class-panel" id="classPanel"></div>
+  </main>
+</div>
+
+<script>
+const classData = [
+  {
+    name: "Бомбер",
+    emoji: "💣",
+    passive: "—",
+    active1: "Появляется взрывной пернатый. После активации ждёт 1.3 сек, после чего летит на ближайшего противника в радиусе 16 блоков. При достижении цели взрывается, нанося 13 маг. урона всем врагам в радиусе 5 блоков. Кто ближе к эпицентру — больше урона (от 5 до 13). Взрыв накладывает бафф +25% маг. урона на 10 сек. Исцеляет бомбера на 25% от урона курицы. Перезарядка: 32 сек",
+    active2: "—",
+    ult: "Самоуничтожение. Время активации: 1.5 сек, прыгает вперёд на 24 блока, по приземлению взрыв, оглушение 2.2 сек, наносит 6+20% маг. урона от макс. ХП. Сам бомбер теряет 50% макс. ХП в виде маг. урона. Перезарядка: 75 сек",
+    shard: "При ударе врага шанс 4.5%, что активируется способность «Бомба»",
+    pvpBuild: ["Стальные ботинки", "Секира", "Посох уничтожения", "Шард II", "Часы/Шипы", "Кольцо", "Шлем ледяного короля"],
+    pveBuild: ["Мидас", "Гибельник / Мракобесец → Жнец"],
+    extraBuild: ["Для выживаемости можно менять гибельник с предметами, которые не нужны на волне"],
+    counter: "➥ Часы защитят от способности и маг. урона бомбера на 9 сек, + 25% пассивной защиты от маг. урона\n➥ Перо/Ангельские туфли позволят рывком уклониться от взрыва",
+    tips: ["Используйте посох после взрыва курицы — чем больше куриц за 10 сек, тем выше ваш и тиммейтов маг. урон"]
+  },
+  {
+    name: "Лучник",
+    emoji: "🏹",
+    passive: "Призрачный лук. +22% урон с луков",
+    active1: "Невидимость на 16 сек + 18% скорости. При попадании луком откидывает врага и превращает урон в магический (×0.7). Перезарядка: 40 сек",
+    active2: "—",
+    ult: "Выпускает стрелу, после попадания оглушает и наносит урон равный расстоянию полёта (1 блок = 1 сек оглушения, до 6 сек; 1 блок = 2 маг. урона, до 10). Перезарядка: 50 сек",
+    shard: "Каждые 5 сек следующий выстрел замедляет на 80%, ослепляет на 2.5 сек и наносит 5 чист. урона",
+    pvpBuild: ["Шард", "Перо Грифона", "Секира", "Шипы", "Шард II", "Астральная сфера", "Посох уничтожения", "Шлем ледяного короля"],
+    pveBuild: ["Мидас", "Секира", "Гибельник", "Мракобесец", "Кольцо", "Шлем ледяного короля"],
+    extraBuild: [],
+    counter: "➥ Спектральный порошок раскроет лучника и наложит замедление\n➥ Часы + Стальные ботинки помогут дойти до лучника и не получить оглушение",
+    tips: ["Избегайте замкнутых пространств с физ. игроками", "Используйте сначала ульту «Стрела веры» для оглушения, затем основную способность"]
+  },
+  {
+    name: "Мечник",
+    emoji: "⚔️",
+    passive: "+16% доп. урона в ближнем бою",
+    active1: "Вокруг вращаются 2 меча, наносящие 11% (5.5% по монстрам) от макс. ХП врага, игнорируя броню. Перезарядка: 34 сек",
+    active2: "—",
+    ult: "Зелье при броске создаёт взрыв радиусом 5 блоков. Все в зоне получают 2 маг. урона и не могут бить в ближнем бою 4 сек. Перезарядка: 60 сек",
+    shard: "Уменьшение перезарядки до 25 сек. Увеличение урона способности на 5%",
+    pvpBuild: ["Стальные ботинки", "Секира", "Часы", "Шипы", "Шард II", "Кольцо", "Шлем ледяного короля"],
+    pveBuild: ["Мидас", "Секира", "Гибельник", "Мракобесец", "Кольцо", "Шлем ледяного короля"],
+    extraBuild: ["Мидас", "Стальные ботинки", "Секира", "Часы", "Шипы", "Кольцо", "Шлем ледяного короля", "Гибельник", "Мракобесец"],
+    counter: "➥ При наличии большого урона рекомендуются шипы\n➥ Магам держать дистанцию",
+    tips: ["При зажатии к стене + Стальные ботинки → активируйте вращающиеся мечи", "На 45+ волнах использовать шард в толпе мобов"]
+  },
+  {
+    name: "Берсерк",
+    emoji: "🪓",
+    passive: "Урон и регенерация увеличиваются на 5%/1 ХП если ХП < 80%. +5% к урону и +1 к регенерации за каждые 10% потерянного ХП",
+    active1: "Требует 35% текущего ХП. 4 топора вокруг, наносят 7% маг. урона от макс. ХП врага, дебафф +4% получаемого урона на 6 сек, замедление 80% на 0.8 сек. Длительность: 9 сек. Перезарядка: 25 сек",
+    active2: "—",
+    ult: "Персонаж не может умереть в течение 4.5 сек. Перезарядка: 240 сек",
+    shard: "Каждый следующий удар наносит 2 чист. урона, дебафф «Сломанные кости» (8 чист. урона/1 сек). Работает на топоры. Перезарядка: 3 сек",
+    pvpBuild: ["Стальные ботинки", "Маска чародея", "Секира", "Кольцо", "Шипы/Часы", "Шлем ледяного короля"],
+    pveBuild: ["Мидас", "Гибельник", "Секира", "Кольцо", "Мракобесец", "Шлем ледяного короля"],
+    extraBuild: [],
+    counter: "➥ Атакуйте берсерка во время использования топоров — у него мало ХП\n➥ Часы защитят на 10 сек от способности\n➥ Шлем ледяного короля собьёт реген берсерка",
+    tips: ["Всегда следите за ХП, держите при себе яблоко/зелье регенерации", "Пытайтесь переиграть уроном, живя за счёт ульты + астральной сферы/пера"]
+  },
+  {
+    name: "Везунчик",
+    emoji: "💰",
+    passive: "+20% монет с волн",
+    active1: "При ударе по игроку крадёт 6×N золота (N — волна), замедляет на 40% на 0.5 сек, крит 135%. Перезарядка: 9 сек",
+    active2: "Меняет местами с ближайшим противником. Противник замедлен на 60%. Перезарядка: 25 сек",
+    ult: "Бросает зелье, через 1 сек появляется клинок в радиусе 5 блоков. 13 маг. урона, откидывает, слепота 5 сек. Перезарядка: 95 сек",
+    shard: "+38% бонус монет с волны",
+    pvpBuild: ["Шард", "Стальные ботинки", "Секира", "Часы", "Шипы", "Шард II", "Кольцо", "Шлем ледяного короля"],
+    pveBuild: ["Мидас", "Секира", "Гибельник", "Мракобесец", "Кольцо", "Шлем ледяного короля"],
+    extraBuild: [],
+    counter: "➥ Сумка призывателя защитит от свапа (чешуйницы примут телепорт)\n➥ Часы защитят от больших денежных потерь",
+    tips: ["На дуэлях не добивайте — бейте рукой/стрелой для максимального золота", "Свап → закиньте противника в паутину/лаву, затем активируйте ульту"]
+  },
+  {
+    name: "Гладиатор",
+    emoji: "🐴",
+    passive: "+50% золота в выигрышной дуэли",
+    active1: "Выпускает коня на 20 блоков, 4 + N/6 маг. урона (N — макс. ХП). Перезарядка: 41 сек",
+    active2: "—",
+    ult: "При ударе шанс 16% активировать 3 меча вокруг, 2 чист. урона в радиусе 3.5 блоков",
+    shard: "В случае проигрыша забирает 25% от ставки против гладиатора",
+    pvpBuild: ["Стальные ботинки", "Секира", "Часы", "Шипы", "Кольцо", "Шлем ледяного короля"],
+    pveBuild: ["Мидас", "Секира", "Гибельник", "Мракобесец", "Кольцо", "Шлем ледяного короля"],
+    extraBuild: ["Маг. закуп: Посох уничтожения", "Шипы", "Шлем ледяного короля", "Гибельник/Мракобесец", "Маска чародея", "Сбрасыватель"],
+    counter: "➥ Часы защитят от откидывания и маг. урона коня\n➥ Накидка антимага помогает против большого маг. урона",
+    tips: ["Шард выгоден когда в катке есть ставочные классы и вы не можете выигрывать дуэли"]
+  },
+  {
+    name: "Алхимик",
+    emoji: "⚗️",
+    passive: "Уровень выпиваемых зелий увеличен на 1",
+    active1: "Бросает зелье — метка проклятия химии на 13 сек: +25% получаемого урона. Перезарядка: 46 сек",
+    active2: "—",
+    ult: "Взрывная волна 40 блоков. 13 маг. урона, сбрасывает все баффы, +4×N доп. урона (N — кол-во эффектов). Перезарядка: 85 сек",
+    shard: "Уровень взрывных зелий и эффекта от стрел увеличен на 1",
+    pvpBuild: ["Шард (если выпала стрела слабости)", "Стальные ботинки", "Секира", "Часы", "Шипы", "Шард II", "Кольцо", "Шлем ледяного короля"],
+    pveBuild: ["Мидас", "Секира", "Боевое кольцо", "Гибельник", "Мракобесец", "Шлем ледяного короля"],
+    extraBuild: [],
+    counter: "➥ Контрится только часами (при большом кол-ве дебаффов)\n➥ В начале дуэли не пейте зелья — дождитесь способности алхимика, которая снимет все эффекты",
+    tips: ["Зелье замедления помогает проходить волну до отражения урона", "Способность снимает все эффекты — и негативные, и позитивные"]
+  },
+  {
+    name: "Титан",
+    emoji: "🛡️",
+    passive: "Книга жизни даёт на 2 ХП больше. Каждые 3 волны +2 ХП дополнительно",
+    active1: "Дальность 4 блока, наносит 3+N маг. урона (N — урон игрока), оглушение 1.4 сек. Перезарядка: 54 сек",
+    active2: "—",
+    ult: "Щит 5 сек. Все атаковавшие получают N/10 маг. урона (N — текущие ХП титана) и теряют физ. урон на 3 сек. Перезарядка: 110 сек",
+    shard: "+25% от макс. ХП в виде золотых ХП при активации. Перезарядка: 110 сек",
+    pvpBuild: ["Стальные ботинки", "Секира", "Часы", "Шипы", "Кольцо", "Шлем ледяного короля"],
+    pveBuild: ["Мидас", "Секира", "Боевое кольцо", "Гибельник", "Мракобесец", "Шлем ледяного короля"],
+    extraBuild: [],
+    counter: "➥ Астральная сфера рекомендуется",
+    tips: ["Используйте «Металлическую броню» при атаке — она блокирует любой тип урона", "Покупка шарда не рекомендуется"]
+  },
+  {
+    name: "Ловкач",
+    emoji: "🎯",
+    passive: "+20% шанс увернуться",
+    active1: "Стрелы в радиусе 6 блоков, 10% маг. урона от макс. ХП, отключают пассивки на 5 сек. Перезарядка: 22 сек",
+    active2: "Уворот от стрел 100%, +15% скорости на 6 сек. Перезарядка: 42 сек",
+    ult: "6 сек полной невидимости, не раскрывается способностями/ударами/выстрелами, +30% скорости. Перезарядка: 150 сек",
+    shard: "При уворте возвращает 40% полученного урона",
+    pvpBuild: ["Стальные ботинки", "Секира", "Маска чародея", "Шипы/Часы", "Шард II", "Кольцо", "Шлем ледяного короля"],
+    pveBuild: ["Мидас", "Секира", "Боевое кольцо", "Гибельник", "Мракобесец", "Шлем ледяного короля"],
+    extraBuild: ["Шард: Посох уничтожения, Шипы, Шлем ледяного короля", "Шард II: Гибельник/Мракобесец, Маска чародея, Плащ дикой лисы"],
+    counter: "➥ Часы защитят от отключения пассивок и урона способности\n➥ С астральной сферой и шипами в командных режимах становится почти неубиваемым\n➥ Копьё деактивирует увороты, но перестанет работать от «острого плаща»",
+    tips: ["В командных режимах используйте способность против классов с буст к урону (Мастер оружия, Головорез и т.д.)"]
+  },
+  {
+    name: "Мастер оружия",
+    emoji: "🗡️",
+    passive: "15% шанс нанести ×1.5 урона",
+    active1: "Метает копьё на 10 блоков, 4+N маг. урона (N — урон), откидывает. Перезарядка: 16 сек",
+    active2: "—",
+    ult: "При ударе все в радиусе 3 блоков получают 8% от нанесённого урона",
+    shard: "+5 к урону копья, -6 сек перезарядки",
+    pvpBuild: ["Стальные ботинки", "Секира", "Часы", "Шипы", "Кольцо", "Шлем ледяного короля"],
+    pveBuild: ["Мидас", "Секира", "Боевое кольцо", "Гибельник", "Мракобесец", "Шлем ледяного короля"],
+    extraBuild: [],
+    counter: "➥ При большом уроне рекомендуются шипы\n➥ Магам держать дистанцию",
+    tips: ["Копьё лучше активировать при срабатывании дробителя", "Пассивка накладывается на крит кольца и секиры — до 20 урона по врагу"]
+  },
+  {
+    name: "Ассасин",
+    emoji: "🌪️",
+    passive: "Урон увеличивается на разницу скорости между ассасином и врагом (макс. +170%)",
+    active1: "+25% скорости на 6 сек. Перезарядка: 36 сек",
+    active2: "Телепорт за спину ближайшему противнику (10 блоков), 5 маг. урона. Перезарядка: 17 сек",
+    ult: "10% шанс нанести +65% урона",
+    shard: "+40% скорости от «Быстрого ветра», -8 сек перезарядки",
+    pvpBuild: ["Стальные ботинки", "Секира", "Часы", "Шард", "Шипы", "Шард II", "Кольцо", "Шлем ледяного короля"],
+    pveBuild: ["Мидас", "Секира", "Боевое кольцо", "Гибельник", "Мракобесец", "Шлем ледяного короля"],
+    extraBuild: [],
+    counter: "➥ Часы блокируют превосходство скорости ассасина",
+    tips: ["Класс очень мобильный — используйте это по максимуму"]
+  },
+  {
+    name: "Азартный",
+    emoji: "🎰",
+    passive: "+16% выигрыша со ставок",
+    active1: "Щит 11 сек: все в радиусе 4 блоков получают 0.5 маг. урона каждые 0.5 сек. ×2 регенерация, -25% входящего маг. урона. Перезарядка: 40 сек",
+    active2: "—",
+    ult: "Арена радиусом 8 блоков на 9 сек. Враги замедлены на 30%, -40% физ. урона по азартному. Перезарядка: 80 сек",
+    shard: "+7% от всех выигранных ставок",
+    pvpBuild: ["Шард", "Стальные ботинки", "Секира", "Часы", "Шипы", "Шард II", "Кольцо", "Шлем ледяного короля"],
+    pveBuild: ["Мидас", "Секира", "Гибельник", "Мракобесец", "Кольцо", "Шлем ледяного короля"],
+    extraBuild: [],
+    counter: "➥ Начальные дуэли может выиграть за счёт арены — не попадайте в неё\n➥ Защищайтесь шипами, щитом или астралом",
+    tips: ["Арена даёт пониженный урон по вам + замедление врагам", "Не ставьте много против топовых игроков"]
+  },
+  {
+    name: "Бережной",
+    emoji: "💸",
+    passive: "+5% дохода со ставок. При проигрыше возвращает 50% от ставки",
+    active1: "+15% скорости и физ. урона, ×2.5 доход за убийство мобов на 11 сек. Перезарядка: 46 сек",
+    active2: "—",
+    ult: "Раз в 2 сек автоматически кидает взрывное зелье в ближайшего врага в 8 блоков. 5 маг. урона в радиусе 4 блоков. Длительность: 14 сек. Перезарядка: 140 сек",
+    shard: "Можно ставить 100% баланса в дуэлях",
+    pvpBuild: ["Шард", "Стальные ботинки", "Секира", "Часы", "Шипы", "Шард II", "Кольцо", "Шлем ледяного короля"],
+    pveBuild: ["Мидас", "Секира", "Гибельник", "Мракобесец", "Кольцо", "Шлем ледяного короля"],
+    extraBuild: [],
+    counter: "➥ Шипы или астральная сфера против способности бережного",
+    tips: ["На волнах свинозомби/зомби-воинов/поборников добивайте мобов под способностью — огромный доход монет", "Шард покупается когда достаточно денег на ставки"]
+  },
+  {
+    name: "Реинкарнатор",
+    emoji: "🔄",
+    passive: "Даёт 1 дополнительную жизнь",
+    active1: "Двойной прыжок, при приземлении землетрясение в 5 блоках, 4+2N маг. урона (N — тяжёлые предметы), замедление 35% на 2.5 сек. Перезарядка: 52 сек",
+    active2: "—",
+    ult: "Полное исцеление. Перезарядка: 110 сек",
+    shard: "Полная неуязвимость 3 сек, конвертирует полученный урон в ХП. Перезарядка: 120 сек",
+    pvpBuild: ["Шард", "Стальные ботинки", "Секира", "Часы", "Шипы", "Шард II", "Кольцо", "Шлем ледяного короля"],
+    pveBuild: ["Мидас", "Секира", "Боевое кольцо", "Гибельник", "Мракобесец", "Шлем ледяного короля"],
+    extraBuild: ["Шард: Посох уничтожения, Шипы, Шлем ледяного короля", "Шард II: Гибельник/Мракобесец, Маска чародея, Сбрасыватель"],
+    counter: "➥ Перед битвой выложите ненужные тяжёлые предметы в стэш (например, мидас) — снизит урон способности",
+    tips: ["Для эффективного прыжка лучше смотреть прямо", "Шард: нет урона и нельзя откинуть (шипы на броне тоже не действуют)"]
+  },
+  {
+    name: "Собиратель",
+    emoji: "🔮",
+    passive: "+10% монет с волн",
+    active1: "ПКМ по мобу — убивает его и даёт 220 монет. Перезарядка: 90 сек",
+    active2: "—",
+    ult: "Токсичное облако, радиус 16 блоков, 14 сек. +15% входящего урона врагам, 2 маг. урона каждые 2 сек. Перезарядка: 85 сек",
+    shard: "Можно использовать «Золотую лихорадку» по врагу: 4 маг. урона, оглушение, +1.2× маг. урона по нему на 2 сек",
+    pvpBuild: ["Маска чародея", "Сбрасыватель", "Секира", "Шард II", "Шипы", "Шлем ледяного короля/Часы", "Гибельник/Мракобесец → Жнец"],
+    pveBuild: ["Мидас", "Секира", "Боевое кольцо", "Гибельник", "Мракобесец", "Шлем ледяного короля"],
+    extraBuild: ["Маска чародея", "Сбрасыватель", "Посох уничтожения", "Шард II", "Шипы", "Коготь грифона", "Гибельник/Мракобесец → Жнец"],
+    counter: "➥ Часы защитят от стана способности",
+    tips: ["Всегда используйте все мидасы и сбрасыватель на волне", "Токсичное облако увеличивает любой урон по существу на 10%"]
+  },
+  {
+    name: "Охотник на монстров",
+    emoji: "🕸️",
+    passive: "+9% урона по мобам",
+    active1: "Бросает зелье, связывая врага на 7 сек (не может уйти дальше 4 блоков). Перезарядка: 44 сек",
+    active2: "—",
+    ult: "Снаряд из красных частиц: 12 маг. урона первому, 8 следующим + замедление 60% на 3 сек. Цепная передача до 12 раз в радиусе 6 блоков. Перезарядка: 190 сек",
+    shard: "+1.3× урон и +30% скорости на 6 сек. Перезарядка: 70 сек",
+    pvpBuild: ["Стальные ботинки", "Секира", "Шард", "Часы", "Шипы", "Шард II", "Кольцо", "Шлем ледяного короля"],
+    pveBuild: ["Мидас", "Секира", "Боевое кольцо", "Гибельник", "Мракобесец", "Шлем ледяного короля"],
+    extraBuild: [],
+    counter: "➥ Часы сбрасывают клетку\n➥ Шипы помогут пока находитесь в клетке",
+    tips: ["Клетка бросается как обычное зелье, работает с таким же радиусом"]
+  },
+  {
+    name: "Вампир",
+    emoji: "🧛",
+    passive: "Жажда крови: 20% шанс восстановить 20% от нанесённого урона",
+    active1: "Вампиризм: слепота в радиусе 3.5 блоков, 1 урон каждые 0.5 сек, весь входящий урон восстанавливает ХП, +8% скорости. 7 сек. Перезарядка: 45 сек",
+    active2: "—",
+    ult: "100% шанс вампиризма на 4 сек. Перезарядка: 140 сек",
+    shard: "+1 блок радиуса, +1 урон, -8 сек перезарядки, +7% скорости",
+    pvpBuild: ["Стальные ботинки", "Секира", "Часы", "Шипы", "Шард II", "Кольцо", "Шлем ледяного короля"],
+    pveBuild: ["Мидас", "Секира", "Боевое кольцо", "Гибельник", "Мракобесец", "Шлем ледяного короля"],
+    extraBuild: [],
+    counter: "➥ Часы помогут избавиться от негативных эффектов",
+    tips: ["Шард и способность не отключают способности Ареса, Паладина и шард Библиотекаря"]
+  },
+  {
+    name: "Иглогрив",
+    emoji: "🦔",
+    passive: "-3% входящего урона (со спины -20%)",
+    active1: "Иголки в радиусе 5 блоков, 3 маг. урона. Каждые следующие иголки +25% урона. Перезарядка: 54 сек",
+    active2: "—",
+    ult: "10% шанс при активации предмета/способности повторить её через 1 сек. Перезарядка: 5 сек",
+    shard: "Каждые 20 полученного урона активирует иголки",
+    pvpBuild: ["Маска чародея", "Секира", "Посох уничтожения", "Шард II", "Шипы/Часы", "Боевое кольцо", "Шлем ледяного короля"],
+    pveBuild: ["Мидас", "Секира", "Боевое кольцо", "Гибельник", "Мракобесец", "Шлем ледяного короля"],
+    extraBuild: [],
+    counter: "➥ Часы защитят на 10 сек от маг. урона иглогрива",
+    tips: ["Не отходите далеко от соперника — сбивает эффект стака иголок"]
+  },
+  {
+    name: "Головорез",
+    emoji: "🔪",
+    passive: "0.7% убить моба (монеты ×5). 10% шанс нанести ×2 урона игроку",
+    active1: "Кинжал на 10 блоков, 3 маг. урона, замедление 50% на 1.5 сек. Перезарядка: 8 сек",
+    active2: "—",
+    ult: "Удар 4.8 блоков, откидывает на 6 блоков, 12%+N% от макс. ХП (N — урон, лимит 60%). Перезарядка: 160 сек",
+    shard: "При срабатывании пассивки +0.3 к урону навсегда",
+    pvpBuild: ["Стальные ботинки", "Секира", "Часы", "Шипы", "Кольцо", "Шлем ледяного короля"],
+    pveBuild: ["Мидас", "Секира", "Боевое кольцо", "Гибельник", "Мракобесец", "Шлем ледяного короля"],
+    extraBuild: [],
+    counter: "➥ Часы против внезапного кинжала (может снести 50-70% ХП)\n➥ Крит головореза в шипы может его убить",
+    tips: ["При использовании кинжала не бейте противника — выпущенный кинжал не нанесёт урон", "Крайне не советуем покупать шард"]
+  },
+  {
+    name: "Охотник за сокровищами",
+    emoji: "💎",
+    passive: "Монеты +50% золота. +100% шанс получить предмет с моба",
+    active1: "Закапывается в землю. -60% урон, +300% регенерация, +20% маг. урон. Перезарядка: 1 сек",
+    active2: "—",
+    ult: "Каменные пики в 16 блоках, 10 маг. урона, оглушение 2.4 сек. Перезарядка: 300 сек",
+    shard: "Выкапывает случайный предмет раз в 300 сек",
+    pvpBuild: ["Сбрасыватель", "Маска чародея", "Секира", "Шард II", "Гибельник", "Боевое кольцо", "Шлем ледяного короля"],
+    pveBuild: ["Мидас", "Секира", "Гибельник", "Боевое кольцо", "Мракобесец", "Шлем ледяного короля"],
+    extraBuild: [],
+    counter: "➥ Порох нужен если закопается",
+    tips: ["Пейте зелья исцеления под землёй — регенерация +100%", "На начальных волнах проходите их в одиночку для шанса на дроп"]
+  },
+  {
+    name: "Кузнец",
+    emoji: "⚒️",
+    passive: "Стоимость улучшений -20%",
+    active1: "Прыжок вперёд 4 блока, в радиусе 3 — 5 маг. урона, замедление 70% на 2.6 сек. Перезарядка: 30 сек",
+    active2: "—",
+    ult: "Накопление силы до 6 сек (каждую сек +25% с 40%). Удар проходит маг. уроном. Перезарядка: 90 сек",
+    shard: "Не получает физ. урон во время способности, удар → ошеломление 2.2 сек",
+    pvpBuild: ["Шард", "Этериальное одеяло", "Стальные ботинки", "Секира", "Шипы/Часы", "Шард II", "Кольцо", "Шлем ледяного короля"],
+    pveBuild: [],
+    extraBuild: ["Перо", "Шард II", "Маска чародея", "Посох уничтожения", "Сбрасыватель", "Шлем ледяного короля", "Гибельник"],
+    counter: "➥ Часы защитят от способности кузнеца",
+    tips: ["Активируйте ульту когда откатился прыжок — так легче достать врага"]
+  },
+  {
+    name: "Джин",
+    emoji: "🧞",
+    passive: "3 атрибута: Сила (+5%+N/2% урона, макс. 40%), Ловкость (+4%+N/2% скорости), Свет (+6%+N/2% регенерации, макс. 120%)",
+    active1: "Сила: огненный щит 7 сек, 4% ХП урона врагам/сек, +30% маг. защиты. Ловкость: 40% уворот 7 сек. Свет: камень 4 сек, -80% урона, +10% ХП/сек. Перезарядка: 100 сек",
+    active2: "—",
+    ult: "Магический камень в радиусе 6 блоков 8 сек. Выход из зоны = 10 маг. урона + оглушение 3 сек. Перезарядка: 200 сек",
+    shard: "Уменьшает перезарядку выбранной способности до 50 сек",
+    pvpBuild: ["Стальные ботинки", "Секира", "Часы", "Шипы", "Кольцо", "Шлем ледяного короля"],
+    pveBuild: ["Мидас", "Секира", "Гибельник", "Боевое кольцо", "Мракобесец", "Шлем ледяного короля"],
+    extraBuild: [],
+    counter: "➥ На 50+ волнах шипы вернут гигантский урон джина\n➥ Перо или астральная сфера поможет против зажатия ботинками",
+    tips: ["Играйте с «Силой» по умолчанию. «Свет» — когда мало ХП. «Ловкость» — когда нужно догнать/убежать", "На 75 волне — максимум +40% к удару в способности «Сила»"]
+  },
+  {
+    name: "Барахольщик",
+    emoji: "🗑️",
+    passive: "+10 предметов на выбор вместо 8",
+    active1: "Мусорка — открывает меню выброшенных предметов и вещей проигравших. Перезарядка: 330 сек",
+    active2: "—",
+    ult: "В радиусе 8 блоков 6+2×N маг. урона (N — задетые враги/мобы), оглушение 2 сек, -50% длительности позитивных зелий. Перезарядка: 22 сек",
+    shard: "Доп. реролл предметов при выборе (не накапливается)",
+    pvpBuild: ["Сбрасыватель", "Маска чародея", "Секира", "Шард II", "Гибельник", "Боевое кольцо", "Шлем ледяного короля"],
+    pveBuild: ["Мидас", "Секира", "Гибельник", "Боевое кольцо", "Мракобесец", "Шлем ледяного короля"],
+    extraBuild: [],
+    counter: "➥ Не скидывайте повторяющиеся алмазные/железные вещи — барахольщик их заберёт",
+    tips: ["Больше не берёт тяжёлые предметы", "Если не планируете использовать мусорку — покупайте шард"]
+  },
+  {
+    name: "Дубликант",
+    emoji: "👥",
+    passive: "При победе в дуэли копирует случайный предмет врага",
+    active1: "Телепорт на 14 блоков. Перезарядка: 14 сек",
+    active2: "Чёрная субстанция: 4+N маг. урона (N — урон), поджог, замедление 40%, периодический маг. урон 2 каждые 1.5 сек на 6 сек. Дальность 24 блока. Перезарядка: 43 сек",
+    ult: "Часы → через 2 сек оглушение в радиусе 12 блоков. Весь урон по оглушённым = исцеление дубликанта. Перезарядка: 160 сек",
+    shard: "Копирует 2 предмета вместо 1",
+    pvpBuild: ["Шард", "Стальные ботинки", "Секира", "Часы", "Шипы", "Шард II", "Кольцо", "Шлем ледяного короля"],
+    pveBuild: ["Мидас", "Секира", "Гибельник", "Боевое кольцо", "Мракобесец", "Шлем ледяного короля"],
+    extraBuild: [],
+    counter: "➥ Перебьёт любой класс с баффом к ближнему урону (Мо, Джин, Зехир)\n➥ Контрится шипами и астральной сферой",
+    tips: ["С маской чародея — телепорт каждые 10 сек"]
+  },
+  {
+    name: "Библиотекарь",
+    emoji: "📚",
+    passive: "Книги на 13% дешевле",
+    active1: "Баффы от книг/предметов ×1.5 на 8 сек. Перезарядка: 70 сек",
+    active2: "—",
+    ult: "Отключает эффекты от книг в радиусе 16 блоков на 8 сек, 4 маг. урона. Перезарядка: 80 сек",
+    shard: "Уменьшает регенерацию на 50%. При активированном шарде + «Теневой разум» — единоразовый маг. урон (урон врага ×0.75)",
+    pvpBuild: ["Стальные ботинки", "Секира", "Часы", "Шипы", "Шард II", "Кольцо", "Шлем ледяного короля"],
+    pveBuild: ["Мидас", "Секира", "Гибельник", "Мракобесец", "Кольцо", "Шлем ледяного короля"],
+    extraBuild: [],
+    counter: "➥ При шарде у противника — пейте зелья исцеления только в часах или без звука его активации\n➥ Библиотекарь отключает урон, часы на это не работают",
+    tips: ["Используйте способности как можно чаще, но не одновременно", "Начало битвы — усиление книг, на лоу ХП врага — шард для отключения регенерации"]
+  },
+  {
+    name: "Лекарь",
+    emoji: "💊",
+    passive: "Аура исцеления: +2 ХП регенерации союзникам в радиусе 18 блоков",
+    active1: "Shift+ПКМ: +20% ХП себе. Обычно — союзнику +25% макс. ХП (дальность 8 блоков). Перезарядка: 32 сек",
+    active2: "—",
+    ult: "Тотем 80+3N ХП (N — волна), стреляет снарядами каждые 0.5 сек, 4 маг. урона + дебафф к свету. Радиус 13 блоков. Перезарядка: 95 сек",
+    shard: "При лечении союзника — его баффы ×2, при активации на врага — его дебаффы ×2",
+    pvpBuild: ["Стальные ботинки", "Секира", "Часы", "Шипы", "Шард II", "Кольцо", "Шлем ледяного короля"],
+    pveBuild: ["Мидас", "Секира", "Гибельник", "Мракобесец", "Кольцо", "Шлем ледяного короля"],
+    extraBuild: [],
+    counter: "➥ Запаситесь зельями исцеления — получайте меньше урона",
+    tips: ["Через сбрасыватель можно создать бесконечную регенерацию II и силу II для тиммейтов", "Не покупайте шард в соло игре"]
+  },
+  {
+    name: "Древний",
+    emoji: "🪨",
+    passive: "9% шанс оглушить на 0.6 сек и нанести 3 физ. урона. Перезарядка: 2.5 сек",
+    active1: "Прыжок вперёд, возвращает ХП к значению 2 сек назад. Перезарядка: 29 сек",
+    active2: "—",
+    ult: "Телепортирует всех врагов в радиусе 20 блоков к себе, -40% скорости на 4 сек, -30% ХП, 25% от макс. ХП урона. Перезарядка: 260 сек",
+    shard: "В месте приземления активирует пассивку, урон до 5 физ. урона",
+    pvpBuild: ["Стальные ботинки", "Секира", "Часы", "Шипы", "Шард II (по желанию)", "Кольцо", "Шлем ледяного короля"],
+    pveBuild: ["Мидас", "Секира", "Гибельник", "Мракобесец", "Кольцо", "Шлем ледяного короля"],
+    extraBuild: [],
+    counter: "➥ Часы убирают стан",
+    tips: ["Против гладиатора: после откидывания коня сразу используйте прыжок — добраться с полным ХП", "С шардом можно аграть волну"]
+  },
+  {
+    name: "Мясник",
+    emoji: "🍖",
+    passive: "+2 ХП и +0.25 регенерации за каждого убитого игрока",
+    active1: "Туманное облако: 1 маг. урон/сек, замедление 8% на 2 сек, себе — половина урона",
+    active2: "—",
+    ult: "Поедает врага в 4 блоках. 3+N/25 маг. урона каждые 3 сек (N — макс. ХП мясника), исцеляет себя на нанесённый урон. Оба оглушены. Перезарядка: 50 сек",
+    shard: "Крюк: притягивает врага, 12 чист. урона",
+    pvpBuild: ["Стальные ботинки", "Секира", "Мракобесец", "Посох уничтожения", "Шлем ледяного короля", "Маска чародея"],
+    pveBuild: [],
+    extraBuild: [],
+    counter: "➥ Часы защитят от способности. У мясника нет бафа к урону — легко перебить",
+    tips: ["Собирайте и прокачивайте щиты — под ними + способность = легкое прохождение"]
+  },
+  {
+    name: "Охотник на драконов",
+    emoji: "🐉",
+    passive: "Кровь дракона: начальная регенерация 4.0 ХП, +15% к эффекту регенерации",
+    active1: "Огненное дыхание: 10% от макс. ХП врага, поджог 6 сек. Перезарядка: 60 сек",
+    active2: "—",
+    ult: "3 печати, каждые 1.2 сек фаербол в ближайшего врага, 3 маг. урона + поджог 2 сек. Длительность: 6.3 сек. Перезарядка: 280 сек",
+    shard: "Огненное дыхание становится круговым, урон до 19% от макс. ХП",
+    pvpBuild: ["Перчатка тьмы", "Стальные ботинки", "Секира", "Боевое кольцо", "Шард II (по желанию)", "Мракобесец", "Шлем ледяного короля", "Гибельник"],
+    pveBuild: [],
+    extraBuild: [],
+    counter: "➥ Шлем ледяного короля снизит регенерацию, но смысл только если надо убить",
+    tips: ["Класс используется для агра волны в командных режимах", "С посохом и сбрасывателем оставляет мобам примерно половину ХП"]
+  },
+  {
+    name: "Снежный человек",
+    emoji: "❄️",
+    passive: "При ударе -10% урон от противника на 3 сек",
+    active1: "Ледяной ход: +15% скорости, след -40% скорости врагов + 1 маг. урона каждые 0.8 сек. 10 сек. Перезарядка: 50 сек",
+    active2: "Снежная преграда: 6 маг. урона, запрещает наносить урон на 2 сек, создаёт преграду. Перезарядка: 45 сек",
+    ult: "Кристалл (8 ХП) в 12 блоках: замедление 50%, нельзя восстанавливать ХП, 1.2 маг. урона. Перезарядка: 240 сек",
+    shard: "+25% к урону когда в 10 блоках от преграды",
+    pvpBuild: ["Стальные ботинки", "Секира", "Часы", "Шипы", "Шард II", "Кольцо", "Шлем ледяного короля"],
+    pveBuild: ["Мидас", "Секира", "Гибельник", "Мракобесец", "Кольцо", "Шлем ледяного короля"],
+    extraBuild: [],
+    counter: "➥ Часы защищают от способности",
+    tips: ["Способность отлично перекрывает проход магическим классам"]
+  },
+  {
+    name: "Паладин",
+    emoji: "✨",
+    passive: "Зелья исцеления +20%. Регенерация +20%. Урон +10%×N за каждый уровень регенерации",
+    active1: "Аура света: восстанавливает 8+N/4 ХП, 0.5× маг. урона + замедление 60% на 1 сек в радиусе 4 блоков. Перезарядка: 46 сек",
+    active2: "—",
+    ult: "Зелье в точку: через 2.6 сек урон раз в 0.2 сек на 1 сек = 3+N (N — регенерация врага/сек). Перезарядка: 150 сек",
+    shard: "Отключает регенерацию врагов на 8 сек при использовании способности",
+    pvpBuild: ["Стальные ботинки", "Секира", "Часы", "Шипы", "Шард II", "Кольцо", "Шлем ледяного короля"],
+    pveBuild: ["Мидас", "Секира", "Гибельник", "Мракобесец", "Кольцо", "Шлем ледяного короля"],
+    extraBuild: [],
+    counter: "➥ Часы до способности — можно восстанавливать ХП. После удара паладина — часы не помогут\n➥ Шипы хорошо отражают удары паладина под регенерацией",
+    tips: ["Собирайте зелья регенерации II и золотые яблоки", "Золотые яблоки сбрасывают зелье регенерации"]
+  },
+  {
+    name: "Пират",
+    emoji: "🏴‍☠️",
+    passive: "—",
+    active1: "Устанавливает метку под врагом. Через 6 сек возвращает его на место метки. Повторная активация = мгновенный телепорт. Перезарядка: 30 сек",
+    active2: "Приливной удар: следующий удар ×1.5 урона + откидывание. Перезарядка: 12 сек",
+    ult: "Тошнота 15 сек, 35% уворот, ×1.3 урон. Перезарядка: 50 сек",
+    shard: "Бросает пиво во врага: тошнота 15 сек, 30% шанс промаха, 2 чист. урона каждые 3 сек. Перезарядка: 60 сек",
+    pvpBuild: ["Стальные ботинки", "Секира", "Часы", "Шипы", "Шард II", "Кольцо", "Шлем ледяного короля"],
+    pveBuild: ["Мидас", "Секира", "Гибельник", "Мракобесец", "Кольцо", "Шлем ледяного короля"],
+    extraBuild: [],
+    counter: "➥ Если словить противника в шипы когда он выпил пиво + прилив — может убить себя",
+    tips: ["Используйте «Прилив» во время нанесения удара"]
+  },
+  {
+    name: "Голем",
+    emoji: "🪨",
+    passive: "При получении удара накапливается заряд (макс. 24). +15% регенерации, -0.4% физ. урон за заряд",
+    active1: "Тратит все заряды, 0.5 маг. урона за заряд, откидывает. Перезарядка: 56 сек",
+    active2: "—",
+    ult: "+25% урон, 1 маг. урона в 5 блоках раз в 2 сек, 5% оглушить при физ. ударе. Иммунитет к замедлению. 20 сек. Заряды = максимум. Перезарядка: 260 сек",
+    shard: "Способность не тратит заряды, +0.75 урона за каждый заряд",
+    pvpBuild: ["Стальные ботинки", "Секира", "Часы", "Шипы", "Кольцо", "Шлем ледяного короля"],
+    pveBuild: ["Мидас", "Секира", "Гибельник", "Мракобесец", "Кольцо", "Шлем ледяного короля"],
+    extraBuild: [],
+    counter: "➥ Шлем ледяного короля значительно снижает регенерацию голема\n➥ Играйте магическим уроном\n➥ Не дуэльтесь вблизи без хила/регена",
+    tips: ["Собирайте зелья регенерации и золотые яблоки, много книг регенерации", "Используйте щит для фарма зарядов от врагов/мобов"]
+  },
+  {
+    name: "Громозверь",
+    emoji: "⚡",
+    passive: "Маг. урон +15%",
+    active1: "4+N маг. урона в 6 блоках (N — урон), замедление 40% на 3 сек, -10% входящего урона за игрока, -4% за моба. Перезарядка: 48 сек",
+    active2: "—",
+    ult: "Громовые удары: каждый удар — молния в врага (+N/2.5 маг. урона), поражает всех в 3 блоках. Перезарядка: 200 сек",
+    shard: "Если враг в 18 блоках использует способность — по нему бьёт молния (6 маг. урона, слепота 2 сек)",
+    pvpBuild: ["Стальные ботинки", "Секира", "Шард", "Посох уничтожения", "Маска чародея", "Шард II", "Боевое кольцо", "Шлем ледяного короля"],
+    pveBuild: ["Мидас", "Секира", "Гибельник", "Мракобесец", "Кольцо", "Шлем ледяного короля"],
+    extraBuild: [],
+    counter: "➥ Часы защитят на 10 сек от маг. урона",
+    tips: ["Перед ударом способностью сразу активируйте перчатку тьмы"]
+  },
+  {
+    name: "Некромант",
+    emoji: "💀",
+    passive: "Все союзники в 16 блоках +15% к маг. урону",
+    active1: "Теряет 20% текущего ХП → снаряд в врагов в 8 блоках наносит % потерянных ХП, некромант получает регенерацию 5% ХП на 6 сек. Перезарядка: 40 сек",
+    active2: "—",
+    ult: "Снаряд в цель в 6 блоках → оглушение 5 сек, 3 зомби с чист. уроном 1+N/4 (N — урон некроманта). Перезарядка: 120 сек",
+    shard: "Некромант больше не теряет ХП, урон = 20% от макс. ХП. Перезарядка: 34 сек",
+    pvpBuild: ["Стальные ботинки", "Секира", "Часы", "Шипы", "Шард II", "Кольцо", "Шлем ледяного короля"],
+    pveBuild: ["Мидас", "Секира", "Гибельник", "Мракобесец", "Кольцо", "Шлем ледяного короля"],
+    extraBuild: [],
+    counter: "➥ Часы защитят от маг. урона и оглушения ульты\n➥ Быстро убивайте зомби — они наносят чистый урон",
+    tips: ["Используйте первую способность для регенерации в критических ситуациях", "Ульта — оглушение 5 сек даёт время для огромного урона", "Пассивка усиливает маг. урон всех союзников — отличный выбор для командных режимов"]
+  },
+  {
+    name: "Феникс",
+    emoji: "🔥",
+    passive: "Каждое использование способностей в 18 блоках исцеляет феникса на 5% макс. ХП",
+    active1: "Тратит 15% текущего ХП. 5 птиц вылетают при получении урона, 3 маг. урона + поджог 4 сек. Перезарядка: 40 сек",
+    active2: "—",
+    ult: "Превращается в яйцо 6 сек: поджигает в 28 блоках (3 маг./сек + замедление 30%). После — оглушение 2 сек, 6 маг. урона, перерождение с полным ХП. Перезарядка: 180 сек",
+    shard: "+2 птицы к «Огненному сердцу», яйцу нужно больше ударов для разрушения",
+    pvpBuild: ["Стальные ботинки", "Секира", "Посох уничтожения", "Шард II", "Маска чародея", "Шлем ледяного короля", "Часы/Шипы"],
+    pveBuild: ["Мидас", "Секира", "Гибельник", "Мракобесец", "Кольцо", "Шлем ледяного короля"],
+    extraBuild: [],
+    counter: "➥ Часы отключают все эффекты феникса",
+    tips: ["Перед яйцом сразу ударьте Посохом", "На соло-карте ставьте яйцо в противоположном углу от соперника", "При «Перерождении» любой маг. урон у всех игроков отключается"]
+  },
+  {
+    name: "Ведьмак",
+    emoji: "🧟",
+    passive: "+2.2% к маг. урону навсегда за каждого убитого игрока",
+    active1: "3 летучих мыши → через 4 сек превращаются в свинозомби (ХП 20+1.2×хп, урон 5+3×урон). Удар зомби +1% входящего урона по врагу. 27 сек. Перезарядка: 65 сек",
+    active2: "—",
+    ult: "Замедление 60% на 4 сек, маг. урон от расстояния (10-60%). Зомби: +2% скорость, +25% урон, полное исцеление. 7 сек. Перезарядка: 180 сек",
+    shard: "У зомби появляется огненный щит (1 маг./0.5 сек), +2% скорость",
+    pvpBuild: ["Мракобесец", "Секира", "Маска чародея", "Посох уничтожения", "Сбрасыватель", "Астральная сфера"],
+    pveBuild: [],
+    extraBuild: [],
+    counter: "➥ Часы защитят от способности",
+    tips: ["На дуэлях добивайте соперников — каждое убийство повышает маг. урон"]
+  },
+  {
+    name: "Слайм",
+    emoji: "💚",
+    passive: "При убийстве врага с эффектом «Взрыв слизи» он взрывается — 15% макс. ХП цели в 4 блоках",
+    active1: "Прыжок вверх 6 блоков, при падении 4 маг. урона в 5 блоках + 3 слайма (замораживают на 0.8 сек, 1 маг./0.4 сек). Перезарядка: 68 сек",
+    active2: "—",
+    ult: "50% маг. защиты союзникам в 50 блоках на 7 сек, исцеление 25% от ХП слайма. Перезарядка: 160 сек",
+    shard: "+20% золотых сердец от макс. ХП. Перезарядка: 55 сек",
+    pvpBuild: ["Стальные ботинки", "Секира", "Часы", "Шипы", "Кольцо", "Шлем ледяного короля"],
+    pveBuild: ["Мидас", "Секира", "Гибельник", "Мракобесец", "Кольцо", "Шлем ледяного короля"],
+    extraBuild: [],
+    counter: "➥ Шипы помогут пережить трудные моменты",
+    tips: ["На волнах убивайте мобов по одному — при смерти остальные получат значительный урон", "Маленькие слизни помогают выигрывать начальные дуэли"]
+  },
+  {
+    name: "Зехир",
+    emoji: "☠️",
+    passive: "5% наложить отравление I на 5 сек (до 5 уровня). Иммунитет к отравлению. +5% физ. урона за уровень яда. +6% скорости если в 20 блоках есть отравленный враг",
+    active1: "Блокирует входящий урон 1.8 сек, накладывает отравление I на 5 сек. Перезарядка: 10 сек",
+    active2: "—",
+    ult: "Взрыв яда в радиусе 5 блоков: 8 маг. урона, оглушение 2 сек, отравление I на 10 сек. Перезарядка: 70 сек",
+    shard: "Отключает пассивки на время отравления. +6.5% входящего физ. урона за уровень яда",
+    pvpBuild: ["Стальные ботинки", "Секира", "Часы", "Шипы", "Шард II", "Кольцо", "Шлем ледяного короля"],
+    pveBuild: ["Мидас", "Секира", "Гибельник", "Мракобесец", "Кольцо", "Шлем ледяного короля"],
+    extraBuild: [],
+    counter: "➥ Часы сбивают эффект отравления\n➥ Под большим ядом + шипы = большой урон зехиру",
+    tips: ["«Толстая кожа» — отличная контратака для первого удара", "Собирайте все виды зелий отравления — уровни суммируются"]
+  },
+  {
+    name: "Жрец крови",
+    emoji: "🩸",
+    passive: "Чем меньше ХП у врага — тем больше урон и скорость (активируется с 75% ХП, +2%/5% ХП врага)",
+    active1: "Прыжок вперёд 8 блоков, замедление 80% на 1.5 сек всем в 4 блоках, 3+N маг. урона. Перезарядка: 40 сек",
+    active2: "—",
+    ult: "Теряет 3% ХП каждую сек, +30% урон, +15% скорость. 11 сек. При убийстве — продление на 10 сек. Перезарядка: 25 сек",
+    shard: "Удары во время ульты дают вампиризм 30%",
+    pvpBuild: ["Стальные ботинки", "Секира", "Часы", "Шипы", "Шард II", "Кольцо", "Шлем ледяного короля"],
+    pveBuild: ["Мидас", "Секира", "Гибельник", "Мракобесец", "Кольцо", "Шлем ледяного короля"],
+    extraBuild: [],
+    counter: "➥ Часы защитят от урона с рывка",
+    tips: ["Используйте рывок во время ульты — урон будет больше", "Перчатку тьмы активируйте перед рывком"]
+  }
+];
+
+let activeClass = null;
+let activeTab = 'abilities';
+
+function renderSidebar() {
+  const grid = document.getElementById('classGrid');
+  grid.innerHTML = classData.map((c, i) => `
+    <button class="class-btn" id="btn-${i}" onclick="selectClass(${i})" title="${c.name}">
+      <div>
+        <div class="class-icon-wrap">${c.emoji}</div>
+        <div style="font-size:0.52rem;line-height:1.2;">${c.name}</div>
+      </div>
+    </button>
+  `).join('');
+}
+
+function filterClasses(query) {
+  const q = query.toLowerCase();
+  classData.forEach((c, i) => {
+    const btn = document.getElementById(`btn-${i}`);
+    if (!btn) return;
+    btn.style.display = c.name.toLowerCase().includes(q) ? '' : 'none';
+  });
+}
+
+function selectClass(index) {
+  if (activeClass !== null) {
+    document.getElementById(`btn-${activeClass}`)?.classList.remove('active');
+  }
+  activeClass = index;
+  document.getElementById(`btn-${index}`)?.classList.add('active');
+  activeTab = 'abilities';
+  renderPanel(classData[index]);
+}
+
+function renderPanel(c) {
+  document.getElementById('welcomeState').style.display = 'none';
+  const panel = document.getElementById('classPanel');
+  panel.className = 'class-panel visible';
+
+  const pvpItems = c.pvpBuild.map((item, i) =>
+    `<li><span class="item-num">${i+1}.</span><span class="item-name">${item}</span></li>`
+  ).join('');
+  const pveItems = c.pveBuild.map((item, i) =>
+    `<li><span class="item-num">${i+1}.</span><span class="item-name">${item}</span></li>`
+  ).join('');
+  const extraItems = c.extraBuild.map((item, i) =>
+    `<li><span class="item-num">${i+1}.</span><span class="item-name">${item}</span></li>`
+  ).join('');
+
+  const counterLines = c.counter.split('\n').map(l =>
+    `<div class="tip-item">${l.replace(/^[➥]\s*/,'')}</div>`
+  ).join('');
+
+  const tipLines = c.tips.map(t =>
+    `<div class="tip-item play-tip">${t}</div>`
+  ).join('');
+
+  panel.innerHTML = `
+    <div class="panel-header">
+      <div class="class-avatar">${c.emoji}</div>
+      <div class="panel-title-block">
+        <div class="panel-class-name">${c.name}</div>
+        <div class="panel-type-badge">✦ Класс КСК · Cristalix</div>
+      </div>
+    </div>
+
+    <div class="tab-nav">
+      <button class="tab-btn active" id="tab-abilities" onclick="switchTab('abilities')">Способности</button>
+      <button class="tab-btn" id="tab-build" onclick="switchTab('build')">Закуп</button>
+      <button class="tab-btn" id="tab-tips" onclick="switchTab('tips')">Советы</button>
+      <button class="tab-btn" id="tab-counter" onclick="switchTab('counter')">Контра</button>
+    </div>
+
+    <div class="tab-pane active" id="pane-abilities">
+      <div class="abilities-grid">
+        ${c.passive && c.passive !== '—' ? `
+        <div class="ability-card passive">
+          <div class="ability-label passive">Пассивная способность</div>
+          <div class="ability-desc">${c.passive}</div>
+        </div>` : ''}
+        ${c.active1 && c.active1 !== '—' ? `
+        <div class="ability-card">
+          <div class="ability-label">Активная способность 1</div>
+          <div class="ability-desc">${c.active1}</div>
+        </div>` : ''}
+        ${c.active2 && c.active2 !== '—' ? `
+        <div class="ability-card">
+          <div class="ability-label">Активная способность 2</div>
+          <div class="ability-desc">${c.active2}</div>
+        </div>` : ''}
+        ${c.ult && c.ult !== '—' ? `
+        <div class="ability-card ult">
+          <div class="ability-label ult">Ульта</div>
+          <div class="ability-desc">${c.ult}</div>
+        </div>` : ''}
+        ${c.shard && c.shard !== '—' ? `
+        <div class="ability-card shard">
+          <div class="ability-label shard">Шард</div>
+          <div class="ability-desc">${c.shard}</div>
+        </div>` : ''}
+      </div>
+    </div>
+
+    <div class="tab-pane" id="pane-build">
+      <div class="build-cols">
+        <div class="build-card">
+          <div class="build-title"><span class="dot"></span>ПВП закуп</div>
+          ${pvpItems ? `<ul class="build-list">${pvpItems}</ul>` : '<div class="no-data">Данных нет</div>'}
+        </div>
+        <div class="build-card">
+          <div class="build-title"><span class="dot pve"></span>ПВЕ закуп</div>
+          ${pveItems ? `<ul class="build-list">${pveItems}</ul>` : '<div class="no-data">Данных нет</div>'}
+        </div>
+      </div>
+      ${extraItems ? `
+      <div class="section-title">Дополнительный закуп</div>
+      <div class="build-card">
+        <div class="build-title"><span class="dot extra"></span>Доп. вариант</div>
+        <ul class="build-list">${extraItems}</ul>
+      </div>` : ''}
+    </div>
+
+    <div class="tab-pane" id="pane-tips">
+      ${tipLines ? `
+      <div class="tips-block">
+        <div class="tips-title">Советы по игре</div>
+        ${tipLines}
+      </div>` : '<div class="no-data">Советы не добавлены</div>'}
+    </div>
+
+    <div class="tab-pane" id="pane-counter">
+      <div class="counter-block">
+        <div class="counter-title">⚔ Как контрить</div>
+        <div class="counter-text">${c.counter.replace(/\n/g, '<br>')}</div>
+      </div>
+    </div>
+  `;
+
+  switchTab(activeTab);
+}
+
+function switchTab(tab) {
+  activeTab = tab;
+  ['abilities','build','tips','counter'].forEach(t => {
+    document.getElementById(`tab-${t}`)?.classList.toggle('active', t === tab);
+    document.getElementById(`pane-${t}`)?.classList.toggle('active', t === tab);
+  });
+}
+
+renderSidebar();
+</script>
+</body>
+</html>
