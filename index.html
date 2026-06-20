@@ -554,9 +554,11 @@
             display: flex;
             align-items: center;
             gap: 24px;
-            padding: 70px 20px 50px;
+            padding: 70px 20px 80px;
             max-width: 960px;
+            width: 100%;
             margin: 0 auto;
+            box-sizing: border-box;
         }
 
         .home-hero img { flex-shrink: 0; }
@@ -655,7 +657,7 @@
         .videos-section {
             max-width: 960px;
             width: 100%;
-            margin: 0 auto 60px;
+            margin: 0 auto 75px;
             padding: 0 20px;
         }
 
@@ -671,10 +673,6 @@
 
         /* Рамка последнего видео */
         .video-latest-frame {
-            background: var(--bg-panel);
-            border: 1px solid var(--border-gold);
-            border-radius: 8px;
-            padding: 24px;
             display: flex;
             flex-direction: column;
             gap: 16px;
@@ -682,25 +680,18 @@
 
         .video-latest-row {
             display: flex;
-            align-items: center;
-            gap: 20px;
+            align-items: flex-start;
+            gap: 28px;
         }
 
         .video-latest-row #sticker-popcorn {
             flex-shrink: 0;
-            align-self: center;
+            width: clamp(220px, 32vw, 380px);
         }
 
         .video-latest-row #latest-video-wrap {
             flex: 1;
             min-width: 0;
-        }
-
-        .video-latest-hint {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            text-align: center;
-            margin: 0;
         }
 
         @media (max-width: 600px) {
@@ -711,7 +702,7 @@
         /* Новое видео */
         .latest-video-card {
             display: flex;
-            gap: 24px;
+            flex-direction: column;
             background: var(--bg-panel);
             border: 1px solid rgba(212,175,55,0.35);
             border-radius: 10px;
@@ -728,8 +719,10 @@
 
         .latest-thumb-wrap {
             position: relative;
-            flex-shrink: 0;
-            width: 320px;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            height: auto;
+            overflow: hidden;
         }
 
         .latest-thumb-wrap img {
@@ -792,7 +785,7 @@
         .latest-video-title {
             font-family: var(--font-headers);
             color: var(--light-gold);
-            font-size: 1.25rem;
+            font-size: 1rem;
             line-height: 1.4;
         }
 
@@ -863,8 +856,6 @@
         }
 
         @media (max-width: 768px) {
-            .latest-video-card { flex-direction: column; }
-            .latest-thumb-wrap { width: 100%; height: 200px; }
             .latest-video-info { padding: 18px 16px; }
             .videos-grid { grid-template-columns: repeat(2, 1fr); }
         }
@@ -877,17 +868,21 @@
         .telegram-section {
             max-width: 960px;
             width: 100%;
-            margin: 0 auto 60px;
-            padding: 32px;
-            background: rgba(212,175,55,0.08);
-            border: 1px solid var(--border-gold);
-            border-radius: 8px;
+            margin: 0 auto 75px;
+            padding: 0 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .telegram-top {
             display: flex;
             align-items: center;
             gap: 28px;
         }
 
-        .telegram-section img {
+        .telegram-top img {
             flex-shrink: 0;
             width: clamp(220px, 32vw, 380px);
             height: auto;
@@ -896,7 +891,7 @@
         .telegram-content {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 14px;
             flex: 1;
             min-width: 0;
         }
@@ -909,18 +904,39 @@
             margin: 0;
         }
 
-        .telegram-content .home-card-btn {
-            align-self: flex-start;
-            text-decoration: none;
+        .telegram-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 4px;
+        }
+
+        .tag-pill {
             display: inline-block;
+            padding: 6px 14px;
+            font-size: 0.82rem;
+            color: var(--light-gold);
+            border: 1px solid var(--border-gold);
+            border-radius: 999px;
+            background: rgba(212,175,55,0.08);
+        }
+
+        .btn-full-width {
+            width: 100%;
+            box-sizing: border-box;
+            text-align: center;
+            padding: 16px 24px;
+            font-size: 1.05rem;
+            text-decoration: none;
+            display: block;
         }
 
         @media (max-width: 600px) {
-            .telegram-section { flex-direction: column; text-align: center; padding: 20px 16px; }
-            .telegram-section img { width: clamp(180px, 60vw, 280px); margin: 0 auto; }
+            .telegram-top { flex-direction: column; text-align: center; }
+            .telegram-top img { width: clamp(180px, 60vw, 280px); margin: 0 auto; }
             .telegram-content { align-items: center; }
             .telegram-content p { text-align: center; }
-            .telegram-content .home-card-btn { align-self: center; }
+            .telegram-tags { justify-content: center; }
         }
 
         /* ===== AUTHOR BLOCK ===== */
@@ -1036,32 +1052,44 @@
             </div>
 
             <div class="videos-section">
-                <h2>Видео</h2>
                 <div class="video-latest-frame">
                     <div class="video-latest-row">
                         <img id="sticker-popcorn" src="" alt="Лингидан с попкорном смотрит видео"
-                             style="width:clamp(140px, 18vw, 220px)" onerror="this.style.display='none'">
+                             onerror="this.style.display='none'">
                         <div id="latest-video-wrap"></div>
                     </div>
-                    <p class="video-latest-hint">Не забудь ознакомиться с новым роликом на канале!</p>
                 </div>
             </div>
 
             <div class="telegram-section">
-                <img id="sticker-table" src="" alt="Сообщество Telegram-канала Лингидан"
-                     onerror="this.style.display='none'">
-                <div class="telegram-content">
-                    <p>Присоединяйся к самому большому телеграм-каналу по КСК! Нас уже более 4000 — хелперы, поиск тимейтов и живое общение.</p>
-                    <a href="https://t.me/Lingidan_TG" class="home-card-btn" target="_blank" rel="noopener noreferrer">Подписаться</a>
+                <div class="telegram-top">
+                    <img id="sticker-table" src="" alt="Сообщество Telegram-канала Лингидан"
+                         onerror="this.style.display='none'">
+                    <div class="telegram-content">
+                        <p>Присоединяйся к самому большому телеграм-каналу по КСК! Нас уже более 4000 — хелперы, поиск тимейтов и живое общение.</p>
+                        <div class="telegram-tags">
+                            <span class="tag-pill">Чат с комьюнити</span>
+                            <span class="tag-pill">Хелперы</span>
+                            <span class="tag-pill">Поиск тимейтов</span>
+                        </div>
+                        <a href="https://t.me/Lingidan_TG" class="home-card-btn btn-full-width" target="_blank" rel="noopener noreferrer">Подписаться</a>
+                    </div>
                 </div>
             </div>
 
             <div class="telegram-section">
-                <img id="sticker-donate" src="" alt="Лингидан у стены с кружкой для монет"
-                     onerror="this.style.display='none'">
-                <div class="telegram-content">
-                    <p>Благодаря твоей поддержке этот канал и сайт до сих пор существуют. Спасибо каждому!</p>
-                    <a href="https://donatepay.ru/don/Lingidan" class="home-card-btn" target="_blank" rel="noopener noreferrer">Поддержать</a>
+                <div class="telegram-top">
+                    <img id="sticker-donate" src="" alt="Лингидан у стены с кружкой для монет"
+                         onerror="this.style.display='none'">
+                    <div class="telegram-content">
+                        <p>Благодаря твоей поддержке этот канал и сайт до сих пор существуют. Спасибо каждому!</p>
+                        <div class="telegram-tags">
+                            <span class="tag-pill">Новое оборудование</span>
+                            <span class="tag-pill">Больше гайдов</span>
+                            <span class="tag-pill">Жизнь сайта</span>
+                        </div>
+                        <a href="https://donatepay.ru/don/Lingidan" class="home-card-btn btn-full-width" target="_blank" rel="noopener noreferrer">Поддержать</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1459,7 +1487,14 @@
 
                 const rawText = await response.text();
                 const rows = parseCSV(rawText);
-                
+
+                const headerRow = rows[0] || [];
+                const buildTitles = [
+                    (headerRow[2] || '').trim().replace(/["']/g, '') || "Закуп 1",
+                    (headerRow[4] || '').trim().replace(/["']/g, '') || "Закуп 2",
+                    (headerRow[6] || '').trim().replace(/["']/g, '') || "Закуп 3"
+                ];
+
                 const dataRows = rows.slice(2);
                 const parsedClasses = [];
                 let classIdCounter = 1;
@@ -1477,9 +1512,9 @@
                     const tips = rawTips.split('\n').map(t => t.trim().replace(/^["']|["']$/g, '')).filter(t => t.length > 0);
 
                     const builds = [
-                        { title: "Закуп 1", items: [] },
-                        { title: "Закуп 2", items: [] },
-                        { title: "Закуп 3", items: [] }
+                        { title: buildTitles[0], items: [] },
+                        { title: buildTitles[1], items: [] },
+                        { title: buildTitles[2], items: [] }
                     ];
 
                     block.forEach(row => {
