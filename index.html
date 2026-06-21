@@ -1040,7 +1040,7 @@
         <!-- ===== ГЛАВНАЯ ===== -->
         <div id="section-home" class="page-section">
             <div class="home-hero">
-                <img id="sticker-wave" src="" alt="Лингидан машет рукой" style="width:clamp(160px, 20vw, 260px)" onerror="this.style.display='none'">
+                <img id="sticker-wave" src="" alt="Лингидан машет рукой" style="width:clamp(160px, 20vw, 260px)">
                 <div class="home-hero-text">
                     <h1>Всем привет, с вами как всегда я, Лингидан!</h1>
                     <p>Добро пожаловать — здесь я собрал всё самое важное по режиму КСК, пригодится и новичку, и опытному игроку.</p>
@@ -1054,8 +1054,7 @@
             <div class="videos-section">
                 <div class="video-latest-frame">
                     <div class="video-latest-row">
-                        <img id="sticker-popcorn" src="" alt="Лингидан с попкорном смотрит видео"
-                             onerror="this.style.display='none'">
+                        <img id="sticker-popcorn" src="" alt="Лингидан с попкорном смотрит видео">
                         <div id="latest-video-wrap"></div>
                     </div>
                 </div>
@@ -1063,8 +1062,7 @@
 
             <div class="telegram-section">
                 <div class="telegram-top">
-                    <img id="sticker-table" src="" alt="Сообщество Telegram-канала Лингидан"
-                         onerror="this.style.display='none'">
+                    <img id="sticker-table" src="" alt="Сообщество Telegram-канала Лингидан">
                     <div class="telegram-content">
                         <p>Присоединяйся к самому большому телеграм-каналу по КСК! Нас уже более 4000 — хелперы, поиск тимейтов и живое общение.</p>
                         <div class="telegram-tags">
@@ -1079,8 +1077,7 @@
 
             <div class="telegram-section">
                 <div class="telegram-top">
-                    <img id="sticker-donate" src="" alt="Лингидан у стены с кружкой для монет"
-                         onerror="this.style.display='none'">
+                    <img id="sticker-donate" src="" alt="Лингидан у стены с кружкой для монет">
                     <div class="telegram-content">
                         <p>Благодаря твоей поддержке этот канал и сайт до сих пор существуют. Спасибо каждому!</p>
                         <div class="telegram-tags">
@@ -1609,7 +1606,10 @@
             Object.entries(map).forEach(([id, url]) => {
                 if (!url) return;
                 const el = document.getElementById(id);
-                if (el) el.src = url;
+                if (!el) return;
+                el.style.display = '';
+                el.src = url;
+                el.onerror = () => { el.style.display = 'none'; };
             });
         }
 
